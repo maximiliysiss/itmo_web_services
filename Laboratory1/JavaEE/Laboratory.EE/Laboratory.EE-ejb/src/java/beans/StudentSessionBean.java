@@ -6,22 +6,33 @@
 package beans;
 
 import beans.models.FieldFind;
+import data.AbstractFacade;
 import entities.Student;
 import java.util.List;
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  *
  * @author zimma
  */
-@Stateful
-public class StudentSessionBean implements StudentSessionBeanLocal {
+@Stateless
+public class StudentSessionBean extends AbstractFacade<Student> implements StudentBeanLocal {
+
+    @PersistenceContext(unitName = "Laboratory.EE-ejbPU")
+    private EntityManager em;
 
     @Override
-    public List<Student> getStudents(List<FieldFind> fieldFinds) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected EntityManager getEntityManager() {
+        return em;
     }
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
+    public StudentSessionBean() {
+        super(Student.class);
+    }
+
+    public List<Student> getStudents(List<FieldFind> fieldFinds) {
+        return findByFieldsAndValue("Student.findByFields", fieldFinds);
+    }
 }

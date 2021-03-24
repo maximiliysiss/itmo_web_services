@@ -5,16 +5,16 @@
  */
 package servlets;
 
-import beans.StudentSessionBean;
-import entities.Student;
-import java.util.List;
 import javax.ejb.EJB;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
-import servlets.contracts.FieldFind;
 import servlets.contracts.FindStudentResponse;
 import servlets.contracts.FindStudentsRequest;
+import beans.StudentBeanLocal;
+import entities.Student;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -24,15 +24,24 @@ import servlets.contracts.FindStudentsRequest;
 public class StudentWebService {
 
     @EJB
-    StudentSessionBean sessionBean;
-    
+    private StudentBeanLocal beanLocal;
+
     /**
      * Web service findStudents
+     *
+     * @param findStudentsRequest
+     * @return
      */
     @WebMethod(operationName = "findStudents")
-    public FindStudentResponse findStudents(@WebParam(name = "fields") FindStudentsRequest parameter) {
-        //TODO write your implementation code here:
-        return null;
+    public FindStudentResponse findStudents(@WebParam(name = "finds") FindStudentsRequest findStudentsRequest) {
+
+        List<Student> students = beanLocal.getStudents(findStudentsRequest.getFieldFinds().stream().map(x -> {
+            return new beans.models.FieldFind(x.getField(), x.getValue());
+        }).collect(Collectors.toList()));
+
+        return new FindStudentResponse(students.stream().map(x -> {
+            return new servlets.contracts.Student(x.getId(), x.getName(), x.getSurname(), x.getThirdname(), x.getBirthplace(), x.getBirthplace());
+        }).collect(Collectors.toList()));
     }
 
 }

@@ -17,6 +17,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class FindStudentResponse implements Serializable {
     private List<Student> students;
 
+    public FindStudentResponse() {
+    }
+    
     public FindStudentResponse(List<Student> students) {
         this.students = students;
     }

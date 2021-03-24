@@ -33,7 +33,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Student.findBySurname", query = "SELECT s FROM Student s WHERE s.surname = :surname")
     , @NamedQuery(name = "Student.findByThirdname", query = "SELECT s FROM Student s WHERE s.thirdname = :thirdname")
     , @NamedQuery(name = "Student.findByBirthday", query = "SELECT s FROM Student s WHERE s.birthday = :birthday")
-    , @NamedQuery(name = "Student.findByBirthplace", query = "SELECT s FROM Student s WHERE s.birthplace = :birthplace")})
+    , @NamedQuery(name = "Student.findByBirthplace", query = "SELECT s FROM Student s WHERE s.birthplace = :birthplace")
+    , @NamedQuery(name = "Student.findByFields", query = "SELECT s FROM Student s WHERE (:id is null OR s.id = :id) and (:name is null OR s.name = :name) "
+                                                                                 + "and (:surname is null OR s.surname = :surname) and (:thirdname is null OR s.thirdname = :thirdname) "
+                                                                                 + "and (:birthday is null OR s.birthday = :birthday) and (:birthplace is null OR s.birthplace = :birthplace)")})
 public class Student implements Serializable {
 
     private static final long serialVersionUID = 1L;

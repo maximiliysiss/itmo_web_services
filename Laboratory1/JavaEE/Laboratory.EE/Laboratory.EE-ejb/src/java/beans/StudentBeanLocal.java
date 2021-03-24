@@ -15,7 +15,8 @@ import javax.ejb.Local;
  * @author zimma
  */
 @Local
-public interface StudentSessionBeanLocal {
+public interface StudentBeanLocal {
 
-    List<Student> getStudents(List<FieldFind> fieldFinds);
+    public List<Student> getStudents(List<FieldFind> fieldFinds);
+    
 }
