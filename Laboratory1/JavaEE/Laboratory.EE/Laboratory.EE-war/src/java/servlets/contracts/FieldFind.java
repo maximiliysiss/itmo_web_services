@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "fieldFind")
 public class FieldFind implements Serializable {
     private String field;
-    private String value;
+    private Object value;
 
     public FieldFind() {
     }
@@ -28,11 +28,11 @@ public class FieldFind implements Serializable {
         this.field = field;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
     

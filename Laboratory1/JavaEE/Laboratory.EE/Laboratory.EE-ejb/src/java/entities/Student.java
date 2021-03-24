@@ -24,19 +24,13 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author zimma
  */
 @Entity
-@Table(name = "Student")
+@Table(name = "dbo.Student")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Student.findAll", query = "SELECT s FROM Student s")
-    , @NamedQuery(name = "Student.findById", query = "SELECT s FROM Student s WHERE s.id = :id")
-    , @NamedQuery(name = "Student.findByName", query = "SELECT s FROM Student s WHERE s.name = :name")
-    , @NamedQuery(name = "Student.findBySurname", query = "SELECT s FROM Student s WHERE s.surname = :surname")
-    , @NamedQuery(name = "Student.findByThirdname", query = "SELECT s FROM Student s WHERE s.thirdname = :thirdname")
-    , @NamedQuery(name = "Student.findByBirthday", query = "SELECT s FROM Student s WHERE s.birthday = :birthday")
-    , @NamedQuery(name = "Student.findByBirthplace", query = "SELECT s FROM Student s WHERE s.birthplace = :birthplace")
     , @NamedQuery(name = "Student.findByFields", query = "SELECT s FROM Student s WHERE (:id is null OR s.id = :id) and (:name is null OR s.name = :name) "
-                                                                                 + "and (:surname is null OR s.surname = :surname) and (:thirdname is null OR s.thirdname = :thirdname) "
-                                                                                 + "and (:birthday is null OR s.birthday = :birthday) and (:birthplace is null OR s.birthplace = :birthplace)")})
+            + "and (:surname is null OR s.surname = :surname) and (:thirdname is null OR s.thirdname = :thirdname) "
+            + "and (:birthday is null OR s.birthday = :birthday) and (:birthplace is null OR s.birthplace = :birthplace)")})
 public class Student implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -63,7 +57,7 @@ public class Student implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "Birthday")
-    private Serializable birthday;
+    private String birthday;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 1024)
@@ -77,7 +71,7 @@ public class Student implements Serializable {
         this.id = id;
     }
 
-    public Student(Integer id, String name, String surname, String thirdname, Serializable birthday, String birthplace) {
+    public Student(Integer id, String name, String surname, String thirdname, String birthday, String birthplace) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -118,11 +112,11 @@ public class Student implements Serializable {
         this.thirdname = thirdname;
     }
 
-    public Serializable getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Serializable birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
@@ -158,5 +152,5 @@ public class Student implements Serializable {
     public String toString() {
         return "entities.Student[ id=" + id + " ]";
     }
-    
+
 }

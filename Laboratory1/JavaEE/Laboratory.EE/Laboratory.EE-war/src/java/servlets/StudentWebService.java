@@ -13,6 +13,7 @@ import servlets.contracts.FindStudentResponse;
 import servlets.contracts.FindStudentsRequest;
 import beans.StudentBeanLocal;
 import entities.Student;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,12 +36,17 @@ public class StudentWebService {
     @WebMethod(operationName = "findStudents")
     public FindStudentResponse findStudents(@WebParam(name = "finds") FindStudentsRequest findStudentsRequest) {
 
-        List<Student> students = beanLocal.getStudents(findStudentsRequest.getFieldFinds().stream().map(x -> {
-            return new beans.models.FieldFind(x.getField(), x.getValue());
-        }).collect(Collectors.toList()));
+        List<beans.models.FieldFind> fieldFinds = new ArrayList<>();
+        if (findStudentsRequest.getFieldFinds() != null) {
+            fieldFinds = findStudentsRequest.getFieldFinds().stream().map(x -> {
+                return new beans.models.FieldFind(x.getField(), x.getValue());
+            }).collect(Collectors.toList());
+        }
+
+        List<Student> students = beanLocal.getStudents(fieldFinds);
 
         return new FindStudentResponse(students.stream().map(x -> {
-            return new servlets.contracts.Student(x.getId(), x.getName(), x.getSurname(), x.getThirdname(), x.getBirthplace(), x.getBirthplace());
+            return new servlets.contracts.Student(x.getId(), x.getName(), x.getSurname(), x.getThirdname(), x.getBirthday(), x.getBirthplace());
         }).collect(Collectors.toList()));
     }
 

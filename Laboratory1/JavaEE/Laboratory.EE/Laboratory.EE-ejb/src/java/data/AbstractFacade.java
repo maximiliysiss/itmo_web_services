@@ -6,7 +6,9 @@
 package data;
 
 import beans.models.FieldFind;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 
@@ -63,11 +65,19 @@ public abstract class AbstractFacade<T> {
         return ((Long) q.getSingleResult()).intValue();
     }
 
-    public List<T> findByFieldsAndValue(String query, List<FieldFind> fieldFinds) {
+    public List<T> findByFieldsAndValue(String query, List<FieldFind> fieldFinds, List<String> allFields) {
         TypedQuery<T> createNamedQuery = getEntityManager().createNamedQuery(query, entityClass);
-        for (FieldFind ff : fieldFinds) {
-            createNamedQuery.setParameter(ff.getField(), ff.getValue());
-        }
+
+        Map<String, Object> args = allFields.stream().collect(HashMap::new, (m, v) -> m.put(v, null), HashMap::putAll);
+
+        fieldFinds.forEach((ff) -> {
+            args.put(ff.getField(), ff.getValue());
+        });
+
+        args.forEach((k, v) -> {
+            createNamedQuery.setParameter(k, v);
+        });
+
         return createNamedQuery.getResultList();
     }
 

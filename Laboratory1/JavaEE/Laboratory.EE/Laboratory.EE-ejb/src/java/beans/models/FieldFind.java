@@ -11,9 +11,9 @@ package beans.models;
  */
 public class FieldFind {
     private String field;
-    private String value;
+    private Object value;
 
-    public FieldFind(String field, String value) {
+    public FieldFind(String field, Object value) {
         this.field = field;
         this.value = value;
     }
@@ -26,11 +26,11 @@ public class FieldFind {
         this.field = field;
     }
 
-    public String getValue() {
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
     

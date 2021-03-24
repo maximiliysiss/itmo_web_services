@@ -8,6 +8,8 @@ package beans;
 import beans.models.FieldFind;
 import data.AbstractFacade;
 import entities.Student;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,6 +21,8 @@ import javax.persistence.PersistenceContext;
  */
 @Stateless
 public class StudentSessionBean extends AbstractFacade<Student> implements StudentBeanLocal {
+
+    private final ArrayList<String> fields = new ArrayList<>(Arrays.asList("id", "name", "surname", "thirdname", "birthday", "birthplace"));
 
     @PersistenceContext(unitName = "Laboratory.EE-ejbPU")
     private EntityManager em;
@@ -33,6 +37,6 @@ public class StudentSessionBean extends AbstractFacade<Student> implements Stude
     }
 
     public List<Student> getStudents(List<FieldFind> fieldFinds) {
-        return findByFieldsAndValue("Student.findByFields", fieldFinds);
+        return findByFieldsAndValue("Student.findByFields", fieldFinds, fields);
     }
 }
