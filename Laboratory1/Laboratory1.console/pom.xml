@@ -33,7 +33,7 @@
                             <wsdlFiles>
                                 <wsdlFile>localhost_8080/Laboratory.EE-war/StudentWebService.wsdl</wsdlFile>
                             </wsdlFiles>
-                            <packageName>com.mycompany.laboratory1.client</packageName>
+                            <packageName>com.mycompany.laboratory1.console.client</packageName>
                             <vmArgs>
                                 <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
                             </vmArgs>
