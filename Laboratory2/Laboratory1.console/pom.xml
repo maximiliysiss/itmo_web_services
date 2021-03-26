@@ -31,13 +31,13 @@
                         </goals>
                         <configuration>
                             <wsdlFiles>
-                                <wsdlFile>localhost_8080/Laboratory.EE-war/StudentWebService.wsdl</wsdlFile>
+                                <wsdlFile>localhost_8080/Laboratory.Standalone/StudentWebService.wsdl</wsdlFile>
                             </wsdlFiles>
-                            <packageName>com.mycompany.laboratory1.console.client</packageName>
+                            <packageName>com.mycompany.laboratory1.console.client.standalone</packageName>
                             <vmArgs>
                                 <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
                             </vmArgs>
-                            <wsdlLocation>http://localhost:8080/Laboratory.EE-war/StudentWebService?wsdl</wsdlLocation>
+                            <wsdlLocation>http://localhost:8080/Laboratory.Standalone/StudentWebService?wsdl</wsdlLocation>
                             <staleFile>${project.build.directory}/jaxws/stale/StudentWebService.stale</staleFile>
                         </configuration>
                         <id>wsimport-generate-StudentWebService</id>

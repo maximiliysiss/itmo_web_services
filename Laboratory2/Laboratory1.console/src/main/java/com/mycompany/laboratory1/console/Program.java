@@ -5,14 +5,13 @@
  */
 package com.mycompany.laboratory1.console;
 
-import com.mycompany.laboratory1.console.client.FieldFind;
-import com.mycompany.laboratory1.console.client.FindStudentResponse;
-import com.mycompany.laboratory1.console.client.FindStudentsRequest;
-import com.mycompany.laboratory1.console.client.StudentWebService_Service;
-import com.mycompany.laboratory1.console.factory.ServiceEntityFactory;
+import com.mycompany.laboratory1.console.client.standalone.Student;
+import com.mycompany.laboratory1.console.client.standalone.StudentWebService;
+import com.mycompany.laboratory1.console.factory.standalone.ServiceEntityFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,21 +23,43 @@ public class Program {
 
     public static void main(String[] args) {
         try {
-            JavaEEService();
+            StandaloneService();
+            System.out.println("com.mycompany.laboratory1.console.Program.main()");
         } catch (MalformedURLException ex) {
             Logger.getLogger(Program.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private static void JavaEEService() throws MalformedURLException {
+    private static void StandaloneService() throws MalformedURLException {
 
-        URL wsdlLocation = new URL("http://localhost:8080/Laboratory.EE-war/StudentWebService?wsdl");
-        StudentWebService_Service studentWebService_Service = new StudentWebService_Service(wsdlLocation);
+        URL wsdlLocation = new URL("http://localhost:8080/Laboratory.Standalone/StudentWebService?wsdl");
+        com.mycompany.laboratory1.console.client.standalone.StudentWebService_Service studentWebService_Service = new com.mycompany.laboratory1.console.client.standalone.StudentWebService_Service(wsdlLocation);
 
-        FindStudentsRequest findStudentsRequest = new FindStudentsRequest();
-        List<FieldFind> fieldFinds = findStudentsRequest.getFieldFinds();
-        fieldFinds.add(ServiceEntityFactory.createFieldFind("id", 1));
+        com.mycompany.laboratory1.console.client.standalone.FindStudentsRequest findStudentsRequest = new com.mycompany.laboratory1.console.client.standalone.FindStudentsRequest();
+        List<com.mycompany.laboratory1.console.client.standalone.FieldFind> fieldFinds = findStudentsRequest.getFieldFinds();
+        fieldFinds.add(com.mycompany.laboratory1.console.factory.standalone.ServiceEntityFactory.createFieldFind("id", 1));
 
-        FindStudentResponse findStudents = studentWebService_Service.getStudentWebServicePort().findStudents(findStudentsRequest);
+        StudentWebService studentWebServicePort = studentWebService_Service.getStudentWebServicePort();
+
+        com.mycompany.laboratory1.console.client.standalone.FindStudentResponse findStudents = studentWebServicePort.findStudents(findStudentsRequest);
+
+        Student createdStudent = studentWebServicePort.create(ServiceEntityFactory.createStudentRequest("Maxim", "Zimin", "03-02-1998", "Arch", "Andreevich"));
+        assert createdStudent != null;
+
+        createdStudent = studentWebServicePort.update(ServiceEntityFactory.editStudentRequest(createdStudent.getId(), "42",
+                createdStudent.getSurname(), createdStudent.getBirthday(), createdStudent.getBirthplace(), createdStudent.getThirdname()));
+        assert createdStudent != null && "42".equals(createdStudent.getName());
+
+        Student byId = studentWebServicePort.getById(createdStudent.getId());
+        assert Objects.equals(byId.getId(), createdStudent.getId()) && !byId.getName().equals(createdStudent.getName());
+
+        studentWebServicePort.delete(byId.getId());
+
+        try {
+            byId = studentWebServicePort.getById(createdStudent.getId());
+            assert false;
+        } catch (Exception e) {
+
+        }
     }
 }

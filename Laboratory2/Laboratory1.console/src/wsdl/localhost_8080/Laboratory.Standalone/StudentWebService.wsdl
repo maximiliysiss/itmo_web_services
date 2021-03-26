@@ -4,6 +4,30 @@
 <xsd:import namespace="http://standalone.laboratory.mycompany.com/" schemaLocation="http://localhost:8080/Laboratory.Standalone/StudentWebService?xsd=1"/>
 </xsd:schema>
 </types>
+<message name="delete">
+<part name="parameters" element="tns:delete"/>
+</message>
+<message name="deleteResponse">
+<part name="parameters" element="tns:deleteResponse"/>
+</message>
+<message name="getById">
+<part name="parameters" element="tns:getById"/>
+</message>
+<message name="getByIdResponse">
+<part name="parameters" element="tns:getByIdResponse"/>
+</message>
+<message name="update">
+<part name="parameters" element="tns:update"/>
+</message>
+<message name="updateResponse">
+<part name="parameters" element="tns:updateResponse"/>
+</message>
+<message name="create">
+<part name="parameters" element="tns:create"/>
+</message>
+<message name="createResponse">
+<part name="parameters" element="tns:createResponse"/>
+</message>
 <message name="findStudents">
 <part name="parameters" element="tns:findStudents"/>
 </message>
@@ -11,6 +35,22 @@
 <part name="parameters" element="tns:findStudentsResponse"/>
 </message>
 <portType name="StudentWebService">
+<operation name="delete">
+<input wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/deleteRequest" message="tns:delete"/>
+<output wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/deleteResponse" message="tns:deleteResponse"/>
+</operation>
+<operation name="getById">
+<input wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/getByIdRequest" message="tns:getById"/>
+<output wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/getByIdResponse" message="tns:getByIdResponse"/>
+</operation>
+<operation name="update">
+<input wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/updateRequest" message="tns:update"/>
+<output wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/updateResponse" message="tns:updateResponse"/>
+</operation>
+<operation name="create">
+<input wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/createRequest" message="tns:create"/>
+<output wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/createResponse" message="tns:createResponse"/>
+</operation>
 <operation name="findStudents">
 <input wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/findStudentsRequest" message="tns:findStudents"/>
 <output wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/findStudentsResponse" message="tns:findStudentsResponse"/>
@@ -18,6 +58,42 @@
 </portType>
 <binding name="StudentWebServicePortBinding" type="tns:StudentWebService">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+<operation name="delete">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="getById">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="update">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="create">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
 <operation name="findStudents">
 <soap:operation soapAction=""/>
 <input>
