@@ -5,6 +5,7 @@
  */
 package com.mycompany.laboratory1.console;
 
+import com.mycompany.laboratory1.console.client.standalone.NotFoundException;
 import com.mycompany.laboratory1.console.client.standalone.Student;
 import com.mycompany.laboratory1.console.client.standalone.StudentWebService;
 import com.mycompany.laboratory1.console.factory.standalone.ServiceEntityFactory;
@@ -27,10 +28,12 @@ public class Program {
             System.out.println("com.mycompany.laboratory1.console.Program.main()");
         } catch (MalformedURLException ex) {
             Logger.getLogger(Program.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NotFoundException ex) {
+            Logger.getLogger(Program.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private static void StandaloneService() throws MalformedURLException {
+    private static void StandaloneService() throws MalformedURLException, NotFoundException {
 
         URL wsdlLocation = new URL("http://localhost:8080/Laboratory.Standalone/StudentWebService?wsdl");
         com.mycompany.laboratory1.console.client.standalone.StudentWebService_Service studentWebService_Service = new com.mycompany.laboratory1.console.client.standalone.StudentWebService_Service(wsdlLocation);
@@ -58,8 +61,8 @@ public class Program {
         try {
             byId = studentWebServicePort.getById(createdStudent.getId());
             assert false;
-        } catch (Exception e) {
-
+        } catch (NotFoundException e) {
+            System.out.println(e.getClass().getName() + " " + e.getMessage());
         }
     }
 }

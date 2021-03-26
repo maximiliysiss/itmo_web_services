@@ -6,6 +6,7 @@
 package com.mycompany.laboratory.standalone.logic;
 
 import com.mycompany.laboratory.standalone.entity.Student;
+import com.mycompany.laboratory.standalone.exceptions.NotFoundException;
 import java.util.List;
 
 /**
@@ -16,11 +17,11 @@ public interface StudentRepository {
 
     List<Student> findStudents(List<FieldFinder> fieldFinders);
 
-    public void delete(int id);
+    public void delete(int id) throws NotFoundException;
 
-    public Student getById(int id);
+    public Student getById(int id) throws NotFoundException;
 
     public Student createStudent(Student student);
 
-    public Student updateStudent(Student student);
+    public Student updateStudent(Student student) throws NotFoundException;
 }

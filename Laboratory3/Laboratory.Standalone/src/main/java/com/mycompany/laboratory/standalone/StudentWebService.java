@@ -5,6 +5,7 @@
  */
 package com.mycompany.laboratory.standalone;
 
+import com.mycompany.laboratory.standalone.exceptions.NotFoundException;
 import com.mycompany.laboratory.standalone.logic.FieldFinder;
 import com.mycompany.laboratory.standalone.logic.SQLStudentRepository;
 import com.mycompany.laboratory.standalone.logic.StudentRepository;
@@ -14,7 +15,6 @@ import java.util.stream.Collectors;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
-import javax.ws.rs.NotFoundException;
 import servlets.contracts.CreateStudentRequest;
 import servlets.contracts.EditStudentRequest;
 import servlets.contracts.FieldFind;
@@ -61,7 +61,7 @@ public class StudentWebService {
     }
 
     @WebMethod(operationName = "update")
-    public servlets.contracts.Student updateStudent(@WebParam(name = "request") EditStudentRequest editStudent) {
+    public servlets.contracts.Student updateStudent(@WebParam(name = "request") EditStudentRequest editStudent) throws NotFoundException {
         com.mycompany.laboratory.standalone.entity.Student editedStudent = repo.updateStudent(new com.mycompany.laboratory.standalone.entity.Student(editStudent.getId(), editStudent.getName(), editStudent.getSurname(), editStudent.getThirdname(),
                 editStudent.getBirthday(), editStudent.getBirthplace()));
         return new servlets.contracts.Student(editedStudent.getId(), editedStudent.getName(), editedStudent.getSurname(),
@@ -69,14 +69,14 @@ public class StudentWebService {
     }
 
     @WebMethod(operationName = "getById")
-    public servlets.contracts.Student getById(@WebParam(name = "request") int id)  {
+    public servlets.contracts.Student getById(@WebParam(name = "request") int id) throws NotFoundException  {
         com.mycompany.laboratory.standalone.entity.Student student = repo.getById(id);
         return new servlets.contracts.Student(student.getId(), student.getName(), student.getSurname(),
                 student.getThirdname(), student.getBirthday(), student.getBirthplace());
     }
 
     @WebMethod(operationName = "delete")
-    public void delete(@WebParam(name = "request") int id) {
+    public void delete(@WebParam(name = "request") int id) throws NotFoundException {
         repo.delete(id);
     }
 }

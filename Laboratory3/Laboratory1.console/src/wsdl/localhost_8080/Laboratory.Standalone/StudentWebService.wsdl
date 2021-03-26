@@ -10,6 +10,9 @@
 <message name="deleteResponse">
 <part name="parameters" element="tns:deleteResponse"/>
 </message>
+<message name="NotFoundException">
+<part name="fault" element="tns:PersonServiceFault"/>
+</message>
 <message name="getById">
 <part name="parameters" element="tns:getById"/>
 </message>
@@ -38,14 +41,17 @@
 <operation name="delete">
 <input wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/deleteRequest" message="tns:delete"/>
 <output wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/deleteResponse" message="tns:deleteResponse"/>
+<fault message="tns:NotFoundException" name="NotFoundException" wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/delete/Fault/NotFoundException"/>
 </operation>
 <operation name="getById">
 <input wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/getByIdRequest" message="tns:getById"/>
 <output wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/getByIdResponse" message="tns:getByIdResponse"/>
+<fault message="tns:NotFoundException" name="NotFoundException" wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/getById/Fault/NotFoundException"/>
 </operation>
 <operation name="update">
 <input wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/updateRequest" message="tns:update"/>
 <output wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/updateResponse" message="tns:updateResponse"/>
+<fault message="tns:NotFoundException" name="NotFoundException" wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/update/Fault/NotFoundException"/>
 </operation>
 <operation name="create">
 <input wsam:Action="http://standalone.laboratory.mycompany.com/StudentWebService/createRequest" message="tns:create"/>
@@ -66,6 +72,9 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="NotFoundException">
+<soap:fault name="NotFoundException" use="literal"/>
+</fault>
 </operation>
 <operation name="getById">
 <soap:operation soapAction=""/>
@@ -75,6 +84,9 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="NotFoundException">
+<soap:fault name="NotFoundException" use="literal"/>
+</fault>
 </operation>
 <operation name="update">
 <soap:operation soapAction=""/>
@@ -84,6 +96,9 @@
 <output>
 <soap:body use="literal"/>
 </output>
+<fault name="NotFoundException">
+<soap:fault name="NotFoundException" use="literal"/>
+</fault>
 </operation>
 <operation name="create">
 <soap:operation soapAction=""/>

@@ -6,6 +6,8 @@
 package com.mycompany.laboratory.standalone.logic;
 
 import com.mycompany.laboratory.standalone.entity.Student;
+import com.mycompany.laboratory.standalone.exceptions.NotFoundException;
+import com.mycompany.laboratory.standalone.exceptions.PersonServiceFault;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -20,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ws.rs.NotFoundException;
 
 /**
  *
@@ -99,12 +100,18 @@ public class SQLStudentRepository implements StudentRepository {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(int id) throws NotFoundException {
         try (Connection conn = DriverManager.getConnection(connectionString)) {
 
             PreparedStatement preparedStatement = conn.prepareStatement(SQLQueries.DELETE_STUDENT);
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
+
+            try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                if (!resultSet.next()) {
+                    throw new NotFoundException("Not found student", PersonServiceFault.defaultInstance());
+                }
+            }
 
         } catch (SQLException ex) {
             Logger.getLogger(SQLStudentRepository.class.getName()).log(Level.SEVERE, null, ex);
@@ -112,10 +119,10 @@ public class SQLStudentRepository implements StudentRepository {
     }
 
     @Override
-    public Student getById(int id) {
+    public Student getById(int id) throws NotFoundException {
         try (Connection conn = DriverManager.getConnection(connectionString)) {
 
-            PreparedStatement preparedStatement = conn.prepareStatement(SQLQueries.SELECT_BY_ID);
+            PreparedStatement preparedStatement = conn.prepareStatement(SQLQueries.SELECT_BY_ID, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setInt(1, id);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -126,7 +133,8 @@ public class SQLStudentRepository implements StudentRepository {
         } catch (SQLException ex) {
             Logger.getLogger(SQLStudentRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
-        throw new NotFoundException("Not found student");
+
+        throw new NotFoundException("Not found student", PersonServiceFault.defaultInstance());
     }
 
     @Override
@@ -146,6 +154,8 @@ public class SQLStudentRepository implements StudentRepository {
                 if (resultSet.next()) {
                     return getById(resultSet.getInt(1));
                 }
+            } catch (NotFoundException ex) {
+                Logger.getLogger(SQLStudentRepository.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         } catch (SQLException ex) {
@@ -156,7 +166,7 @@ public class SQLStudentRepository implements StudentRepository {
     }
 
     @Override
-    public Student updateStudent(Student student) {
+    public Student updateStudent(Student student) throws NotFoundException {
         try (Connection conn = DriverManager.getConnection(connectionString)) {
 
             PreparedStatement preparedStatement = conn.prepareStatement(SQLQueries.UPDATE_STUDENT, Statement.RETURN_GENERATED_KEYS);
@@ -168,6 +178,12 @@ public class SQLStudentRepository implements StudentRepository {
             preparedStatement.setInt(6, student.getId());
 
             preparedStatement.executeUpdate();
+
+            try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                if (!resultSet.next()) {
+                    throw new NotFoundException("Not found student", PersonServiceFault.defaultInstance());
+                }
+            }
 
             return getById(student.getId());
 
