@@ -10,42 +10,50 @@ import com.mycompany.laboratory.standalone.logic.SQLStudentRepository;
 import com.mycompany.laboratory.standalone.logic.StudentRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
-import javax.jws.WebService;
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import servlets.contracts.FieldFind;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import servlets.contracts.FindStudentResponse;
 import servlets.contracts.FindStudentsRequest;
 
 /**
+ * REST Web Service
  *
  * @author zimma
  */
-@WebService(serviceName = "StudentWebService")
-public class StudentWebService {
-    
+@Path("students")
+public class RestService {
+
     private StudentRepository repo = SQLStudentRepository.create("jdbc:sqlserver://localhost:54813;databaseName=itmo_webserver;user=root;password=root;");
 
     /**
-     * This is a sample web service operation
-     *
-     * @param findStudentsRequest
-     * @return
+     * Creates a new instance of GenericResource
      */
-    @WebMethod(operationName = "findStudents")
-    public FindStudentResponse findStudents(@WebParam(name = "finders") FindStudentsRequest findStudentsRequest) {
+    public RestService() {
+    }
+
+    @POST
+    @Path("find")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public FindStudentResponse findStudents(FindStudentsRequest findStudentsRequest) {
         List<FieldFinder> fieldFinds = new ArrayList<>();
-        if (findStudentsRequest.getFieldFinds() != null) {
-            for (FieldFind ff : findStudentsRequest.getFieldFinds()) {
-                fieldFinds.add(new FieldFinder(ff.getField(), ff.getValue()));
+        if (findStudentsRequest != null) {
+            for (Map.Entry<String, Object> ff : findStudentsRequest.toMap().entrySet()) {
+                fieldFinds.add(new FieldFinder(ff.getKey(), ff.getValue()));
             }
         }
-        
+
         List<com.mycompany.laboratory.standalone.entity.Student> findStudents = repo.findStudents(fieldFinds);
-        
-        return new FindStudentResponse(findStudents.stream().map(x -> {
+
+        FindStudentResponse findStudentResponse = new FindStudentResponse(findStudents.stream().map(x -> {
             return new servlets.contracts.Student(x.getId(), x.getName(), x.getSurname(), x.getThirdname(), x.getBirthday(), x.getBirthplace());
         }).collect(Collectors.toList()));
+
+        return findStudentResponse;
     }
 }
