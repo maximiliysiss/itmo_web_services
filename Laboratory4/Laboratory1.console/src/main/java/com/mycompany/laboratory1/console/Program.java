@@ -34,8 +34,13 @@ public class Program {
         }
     }
 
-    private static void JavaEEService() throws MalformedURLException {
+    private static void JavaEEService() throws MalformedURLException, IOException {
+        Retrofit build = new retrofit2.Retrofit.Builder().addConverterFactory(GsonConverterFactory.create())
+                .baseUrl("http://localhost:8080/Laboratory.EE-war/").build();
+        StudentAPI client = build.create(StudentAPI.class);
 
+        Call<FindStudentResponse> findStudents = client.findStudents(new FindStudentsRequest(1, null, null, null, null, null));
+        Response<FindStudentResponse> execute = findStudents.execute();
     }
 
     private static void StandaloneService() throws MalformedURLException, IOException {
@@ -45,6 +50,5 @@ public class Program {
 
         Call<FindStudentResponse> findStudents = client.findStudents(new FindStudentsRequest(1, null, null, null, null, null));
         Response<FindStudentResponse> execute = findStudents.execute();
-
     }
 }
