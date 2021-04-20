@@ -5,9 +5,9 @@
  */
 package com.mycompany.laboratory1.console.factory.standalone;
 
-import com.mycompany.laboratory1.console.client.standalone.CreateStudentRequest;
-import com.mycompany.laboratory1.console.client.standalone.EditStudentRequest;
-import com.mycompany.laboratory1.console.client.standalone.FieldFind;
+import com.mycompany.laboratory.standalone.CreateStudentRequest;
+import com.mycompany.laboratory.standalone.EditStudentRequest;
+import com.mycompany.laboratory.standalone.FieldFind;
 
 /**
  *

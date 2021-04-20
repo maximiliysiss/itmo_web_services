@@ -21,7 +21,11 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import servlets.contracts.CreateStudentRequest;
 import servlets.contracts.EditStudentRequest;
 import servlets.contracts.FindStudentResponse;
@@ -96,10 +100,31 @@ public class RestService {
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Student createStudent(CreateStudentRequest createStudentReqeust) {
+    public Response createStudent(CreateStudentRequest createStudentReqeust, @Context HttpHeaders httpHeaders) {
+        if(!hardCodeAuth(httpHeaders))
+            return getNoCacheResponseBuilder(Response.Status.UNAUTHORIZED).build();
+        
         com.mycompany.laboratory.standalone.entity.Student createdStudent = repo.createStudent(new com.mycompany.laboratory.standalone.entity.Student(0, createStudentReqeust.getName(), createStudentReqeust.getSurname(), createStudentReqeust.getThirdname(),
                 createStudentReqeust.getBirthday(), createStudentReqeust.getBirthplace()));
-        return new servlets.contracts.Student(createdStudent.getId(), createdStudent.getName(), createdStudent.getSurname(),
+        Student student = new servlets.contracts.Student(createdStudent.getId(), createdStudent.getName(), createdStudent.getSurname(),
                 createdStudent.getThirdname(), createdStudent.getBirthday(), createdStudent.getBirthplace());
+        return getNoCacheResponseBuilder(Response.Status.OK).entity(student).build();
+    }
+    
+    private boolean hardCodeAuth(HttpHeaders headers){
+        if(!"root".equals(headers.getHeaderString("AUTHORIZE"))){
+            System.out.println("auth error");
+            return false;
+        }
+        return true;
+    }
+    
+    private Response.ResponseBuilder getNoCacheResponseBuilder( Response.Status status ) {
+        CacheControl cc = new CacheControl();
+        cc.setNoCache( true );
+        cc.setMaxAge( -1 );
+        cc.setMustRevalidate( true );
+  
+        return Response.status( status ).cacheControl( cc );
     }
 }

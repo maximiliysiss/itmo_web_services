@@ -5,8 +5,12 @@
  */
 package com.mycompany.laboratory1.console;
 
-import com.mycompany.laboratory1.console.client.standalone.Student;
-import com.mycompany.laboratory1.console.client.standalone.StudentWebService;
+import com.mycompany.laboratory.standalone.FieldFind;
+import com.mycompany.laboratory.standalone.FindStudentResponse;
+import com.mycompany.laboratory.standalone.FindStudentsRequest;
+import com.mycompany.laboratory.standalone.Student;
+import com.mycompany.laboratory.standalone.StudentWebService;
+import com.mycompany.laboratory.standalone.StudentWebService_Service;
 import com.mycompany.laboratory1.console.factory.standalone.ServiceEntityFactory;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,34 +36,38 @@ public class Program {
 
     private static void StandaloneService() throws MalformedURLException {
 
-        URL wsdlLocation = new URL("http://localhost:8080/Laboratory.Standalone/StudentWebService?wsdl");
-        com.mycompany.laboratory1.console.client.standalone.StudentWebService_Service studentWebService_Service = new com.mycompany.laboratory1.console.client.standalone.StudentWebService_Service(wsdlLocation);
+        URL wsdlLocation = new URL("http://localhost:10010/Laboratory.Standalone/StudentWebService?wsdl");
+        StudentWebService_Service studentWebService_Service = new StudentWebService_Service(wsdlLocation);
 
-        com.mycompany.laboratory1.console.client.standalone.FindStudentsRequest findStudentsRequest = new com.mycompany.laboratory1.console.client.standalone.FindStudentsRequest();
-        List<com.mycompany.laboratory1.console.client.standalone.FieldFind> fieldFinds = findStudentsRequest.getFieldFinds();
+        FindStudentsRequest findStudentsRequest = new FindStudentsRequest();
+        List<FieldFind> fieldFinds = findStudentsRequest.getFieldFinds();
         fieldFinds.add(com.mycompany.laboratory1.console.factory.standalone.ServiceEntityFactory.createFieldFind("id", 1));
 
         StudentWebService studentWebServicePort = studentWebService_Service.getStudentWebServicePort();
 
-        com.mycompany.laboratory1.console.client.standalone.FindStudentResponse findStudents = studentWebServicePort.findStudents(findStudentsRequest);
-
-        Student createdStudent = studentWebServicePort.create(ServiceEntityFactory.createStudentRequest("Maxim", "Zimin", "03-02-1998", "Arch", "Andreevich"));
-        assert createdStudent != null;
-
-        createdStudent = studentWebServicePort.update(ServiceEntityFactory.editStudentRequest(createdStudent.getId(), "42",
-                createdStudent.getSurname(), createdStudent.getBirthday(), createdStudent.getBirthplace(), createdStudent.getThirdname()));
-        assert createdStudent != null && "42".equals(createdStudent.getName());
-
-        Student byId = studentWebServicePort.getById(createdStudent.getId());
-        assert Objects.equals(byId.getId(), createdStudent.getId()) && !byId.getName().equals(createdStudent.getName());
-
-        studentWebServicePort.delete(byId.getId());
-
         try {
+
+            Student createdStudent = studentWebServicePort.create(ServiceEntityFactory.createStudentRequest("Maxim", "Zimin", "03-02-1998", "Arch", "Andreevich"));
+            assert createdStudent != null;
+
+            FindStudentResponse findStudents = studentWebServicePort.findStudents(findStudentsRequest);
+            
+            createdStudent = studentWebServicePort.update(ServiceEntityFactory.editStudentRequest(createdStudent.getId(), "42",
+                    createdStudent.getSurname(), createdStudent.getBirthday(), createdStudent.getBirthplace(), createdStudent.getThirdname()));
+            assert createdStudent != null && "42".equals(createdStudent.getName());
+
+            Student byId = studentWebServicePort.getById(createdStudent.getId());
+            assert Objects.equals(byId.getId(), createdStudent.getId()) && !byId.getName().equals(createdStudent.getName());
+
+            studentWebServicePort.delete(byId.getId());
+
             byId = studentWebServicePort.getById(createdStudent.getId());
             assert false;
         } catch (Exception e) {
 
         }
+
+        studentWebServicePort.upload(new byte[10]);
+
     }
 }
